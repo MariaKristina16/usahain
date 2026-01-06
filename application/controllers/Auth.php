@@ -221,4 +221,15 @@ class Auth extends CI_Controller
         $this->session->unset_userdata('dashboard_type');
         redirect('auth/dashboard');
     }
+
+    /**
+     * Halaman pengisian informasi bisnis (untuk dashboard perencanaan)
+     */
+    public function bisnis_info()
+    {
+        if (! $this->session->userdata('id_user')) {
+            redirect('auth/login');
+        }
+        $this->load->view('auth/bisnis_info');
+    }
 }

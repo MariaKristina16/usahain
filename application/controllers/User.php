@@ -138,5 +138,28 @@ class User extends CI_Controller {
         $this->User_model->delete($id);
         redirect('user');
     }
+
+    // Simpan informasi bisnis dari form perencanaan (AJAX)
+    public function save_bisnis_info()
+    {
+        if (! $this->session->userdata('id_user')) {
+            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+            return;
+        }
+        $id_user = $this->session->userdata('id_user');
+        $json = json_decode(file_get_contents('php://input'), true);
+        $nama_usaha = isset($json['nama_usaha']) ? $json['nama_usaha'] : '';
+        $jenis_usaha = isset($json['jenis_usaha']) ? $json['jenis_usaha'] : '';
+        // Simpan ke database (update user)
+        $data = [
+            'nama_usaha' => $nama_usaha,
+            'jenis_usaha' => $jenis_usaha
+        ];
+        $this->User_model->update($id_user, $data);
+        // Update session juga
+        $this->session->set_userdata('nama_usaha', $nama_usaha);
+        $this->session->set_userdata('jenis_usaha', $jenis_usaha);
+        echo json_encode(['success' => true, 'message' => 'Informasi bisnis berhasil disimpan']);
+    }
 }
 

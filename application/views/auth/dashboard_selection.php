@@ -314,11 +314,77 @@ $user = array_merge([
 
   </div>
 
-  <script>
-    function selectDashboard(type) {
-      // Redirect ke controller untuk set session dan redirect
-      window.location.href = '<?= site_url('auth/set_dashboard_type'); ?>/' + type;
-    }
+  <!-- Modal Informasi Bisnis (Muncul setelah memilih dashboard perencanaan) -->
+<div id="modalInformasiBisnis" class="modal" tabindex="-1" style="display:none; background:rgba(0,0,0,0.2);">
+  <div class="modal-dialog" style="max-width: 480px; margin: 40px auto;">
+    <div class="modal-content" style="border-radius:18px; overflow:hidden;">
+      <div class="modal-header" style="border-bottom:none;">
+        <h4 class="modal-title" style="font-weight:700; color:#d32f2f;">
+          <img src="<?= base_url('assets/icons/business-info.png') ?>" style="width:28px; margin-right:8px; vertical-align:middle;"> Informasi Bisnis Anda
+        </h4>
+        <button type="button" class="close" onclick="document.getElementById('modalInformasiBisnis').style.display='none'" style="font-size:1.5rem; background:none; border:none;">&times;</button>
+      </div>
+      <div class="modal-body" style="padding-top:0;">
+        <div style="background:#e8f0fe; border-radius:10px; padding:12px 16px; margin-bottom:18px; display:flex; align-items:center;">
+          <img src="<?= base_url('assets/icons/clipboard.png') ?>" style="width:32px; margin-right:12px;">
+          <div>
+            <div style="font-weight:600; color:#1a237e;">Calon Pemilik UMKM</div>
+            <div style="font-size:0.95rem; color:#374151;">Fokus pada perencanaan dan persiapan bisnis</div>
+          </div>
+        </div>
+        <form id="formInformasiBisnis">
+          <div style="margin-bottom:14px;">
+            <label style="font-weight:600; color:#222;">Nama Usaha (Rencana) <span style="color:#888; font-weight:400;">(Opsional)</span></label>
+            <input type="text" name="nama_usaha" id="nama_usaha" class="form-control" placeholder="Contoh: Warung Makan Berkah" style="background:#f5f6fa; border:none; border-radius:8px; margin-top:4px;">
+          </div>
+          <div style="margin-bottom:14px;">
+            <label style="font-weight:600; color:#222;">Jenis Usaha <span style="color:#888; font-weight:400;">(Opsional)</span></label>
+            <input type="text" name="jenis_usaha" id="jenis_usaha" class="form-control" placeholder="Contoh: Kuliner, Fashion, Jasa, Retail, dll" style="background:#f5f6fa; border:none; border-radius:8px; margin-top:4px;">
+          </div>
+          <div style="background:#fffbe6; border:1px solid #ffe082; border-radius:8px; padding:10px 14px; margin-bottom:18px; color:#b26a00; font-size:0.98rem;">
+            <span style="margin-right:6px;">💡</span>Anda dapat mengubah informasi ini kapan saja di pengaturan profil
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <button type="button" class="btn btn-light" onclick="lewatiInformasiBisnis()" style="border:1px solid #ccc;">Lewati</button>
+            <button type="submit" class="btn btn-primary" style="background:linear-gradient(90deg,#2196f3,#1976d2); border:none;">Mulai Sekarang</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+function selectDashboard(type) {
+  if(type === 'planning') {
+    // Redirect ke halaman pengisian informasi bisnis
+    window.location.href = "<?= site_url('auth/bisnis_info'); ?>";
+  } else if(type === 'operasional') {
+    window.location.href = "<?= site_url('dashboard/operasional'); ?>";
+  }
+}
+
+function lewatiInformasiBisnis() {
+  document.getElementById('modalInformasiBisnis').style.display = 'none';
+  // Lanjutkan ke dashboard perencanaan
+  window.location.href = '<?= site_url('dashboard/perencanaan'); ?>';
+}
+
+document.getElementById('formInformasiBisnis').onsubmit = function(e) {
+  e.preventDefault();
+  // Simpan data ke server via AJAX
+  fetch('<?= site_url('user/save_bisnis_info'); ?>', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      nama_usaha: document.getElementById('nama_usaha').value,
+      jenis_usaha: document.getElementById('jenis_usaha').value
+    })
+  }).then(r => r.json()).then(res => {
+    document.getElementById('modalInformasiBisnis').style.display = 'none';
+    // Lanjutkan ke dashboard perencanaan
+    window.location.href = '<?= site_url('dashboard/perencanaan'); ?>';
+  });
+}
   </script>
 
 </body>
