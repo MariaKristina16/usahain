@@ -117,6 +117,54 @@
       box-shadow: 0 6px 20px rgba(28, 100, 148, 0.35);
     }
 
+    /* Desktop: Show menu and buttons inline, hide toggle */
+    @media(min-width: 992px) {
+      .navbar-toggler {
+        display: none !important;
+      }
+      
+      #navbarContent {
+        display: none !important;
+      }
+      
+      #desktopMenu {
+        display: flex !important;
+      }
+    }
+
+    /* Mobile: Show toggle and collapse menu, restructure layout */
+    @media(max-width: 991px) {
+      .navbar {
+        background: rgba(255, 255, 255, 0) !important;
+        padding: 10px 0 !important;
+      }
+      
+      .navbar-toggler {
+        display: flex !important;
+      }
+      
+      .navbar-toggler:focus {
+        box-shadow: none;
+        outline: none;
+      }
+      
+      .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%231C6494' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+      }
+      
+      #desktopMenu {
+        display: none !important;
+      }
+      
+      #navbarContent {
+        display: none !important;
+      }
+      
+      #navbarContent.show {
+        display: block !important;
+      }
+    }
+
     .btn-primary{
       background:#1C6494 !important;
       border-color:#1C6494 !important;
@@ -661,6 +709,17 @@
       .stat-card{
         margin-bottom: 12px;
       }
+      
+      /* Navbar Mobile Button sizing */
+      .btn-login {
+        padding: 8px 12px !important;
+        font-size: 0.8rem;
+      }
+      
+      .btn-signup {
+        padding: 8px 14px !important;
+        font-size: 0.8rem;
+      }
     }
 
     @media(max-width:576px){
@@ -674,6 +733,19 @@
         padding: 8px 16px !important;
         font-size: 0.9rem;
       }
+      .btn-login {
+        padding: 8px 16px !important;
+        font-size: 0.85rem;
+      }
+      
+      .btn-signup {
+        padding: 8px 18px !important;
+        font-size: 0.85rem;
+      }
+      
+      .btn-login, .btn-signup {
+        white-space: nowrap;
+      }
     }
 
   </style>
@@ -682,7 +754,7 @@
 
 <!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg">
-  <div class="container">
+  <div class="container-fluid px-3 px-lg-4">
     
     <!-- NAVBAR INNER WRAPPER - CAPSULE DESIGN -->
     <div style="
@@ -692,9 +764,11 @@
       width: 100%;
       background: #FFFFFF;
       border-radius: 9999px;
-      padding: 14px 28px;
+      padding: 14px 20px;
+      padding-right: 28px;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-      gap: 20px;
+      gap: 15px;
+      position: relative;
     ">
       
       <!-- LEFT SECTION: Logo & Brand -->
@@ -716,28 +790,18 @@
           font-size: 1.3rem;
           color: #1C6494;
           white-space: nowrap;
-          display: none;
         " class="d-none d-sm-inline">Usahain</span>
       </div>
 
-      <!-- MOBILE TOGGLE (HIDDEN BY DEFAULT) -->
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" style="
+      <!-- DESKTOP MENU: Visible on Large Screens -->
+      <ul class="navbar-nav" style="
         display: none;
-        border: none;
-        padding: 8px 12px;
-      ">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <!-- CENTER SECTION: Menu Links (Hidden on Mobile) -->
-      <ul class="navbar-nav mx-auto" style="
-        display: flex;
         gap: 8px;
         margin: 0;
         list-style: none;
-        flex-grow: 1;
+        flex: 1;
         justify-content: center;
-      " id="navbarContent">
+      " id="desktopMenu">
         <li class="nav-item" style="margin: 0;"><a class="nav-link" href="#features" style="
           color: #64748B;
           font-weight: 500;
@@ -776,13 +840,26 @@
         " onmouseover="this.style.color='#1C6494'; this.style.backgroundColor='rgba(28, 100, 148, 0.08)';" onmouseout="this.style.color='#64748B'; this.style.backgroundColor='transparent';">Kontak</a></li>
       </ul>
 
+      <!-- MOBILE TOGGLE BUTTON -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation" style="
+        border: none;
+        padding: 8px 12px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-left: auto;
+        margin-right: 12px;
+      ">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
       <!-- RIGHT SECTION: Action Buttons -->
       <div style="
         display: flex;
         align-items: center;
         gap: 12px;
         flex-shrink: 0;
-        min-width: auto;
       ">
         <!-- LOGIN BUTTON: Outline Style -->
         <a href="<?= site_url('auth/login'); ?>" style="
@@ -824,6 +901,77 @@
         " onmouseover="this.style.boxShadow='0 6px 20px rgba(28, 100, 148, 0.35)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow='0 4px 12px rgba(28, 100, 148, 0.25)'; this.style.transform='translateY(0)';">
           Sign Up
         </a>
+      </div>
+
+      <!-- CENTER SECTION: Mobile Menu Dropdown -->
+      <div class="collapse navbar-collapse" id="navbarContent" style="
+        display: none;
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 20px;
+        right: 20px;
+        width: calc(100% - 40px);
+        background: white;
+        border-radius: 12px;
+        padding: 12px 0 !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        z-index: 1001;
+      ">
+        <ul class="navbar-nav" style="
+          display: flex;
+          flex-direction: column;
+          gap: 0;
+          margin: 0;
+          list-style: none;
+        ">
+        <li class="nav-item" style="margin: 0;"><a class="nav-link" href="#features" style="
+          color: #64748B;
+          font-weight: 500;
+          font-size: 0.95rem;
+          padding: 12px 20px;
+          border-radius: 0;
+          transition: all 0.3s ease;
+          margin: 0;
+          display: block;
+          text-align: center;
+        " onmouseover="this.style.color='#1C6494'; this.style.backgroundColor='rgba(28, 100, 148, 0.05)';" onmouseout="this.style.color='#64748B'; this.style.backgroundColor='transparent';">Fitur</a></li>
+        <li class="nav-item" style="margin: 0;"><a class="nav-link" href="#penawaran" style="
+          color: #64748B;
+          font-weight: 500;
+          font-size: 0.95rem;
+          padding: 12px 20px;
+          border-radius: 0;
+          transition: all 0.3s ease;
+          margin: 0;
+          display: block;
+          text-align: center;
+          border-top: 1px solid #f0f4f8;
+        " onmouseover="this.style.color='#1C6494'; this.style.backgroundColor='rgba(28, 100, 148, 0.05)';" onmouseout="this.style.color='#64748B'; this.style.backgroundColor='transparent';">Paket</a></li>
+        <li class="nav-item" style="margin: 0;"><a class="nav-link" href="#why" style="
+          color: #64748B;
+          font-weight: 500;
+          font-size: 0.95rem;
+          padding: 12px 20px;
+          border-radius: 0;
+          transition: all 0.3s ease;
+          margin: 0;
+          display: block;
+          text-align: center;
+          border-top: 1px solid #f0f4f8;
+        " onmouseover="this.style.color='#1C6494'; this.style.backgroundColor='rgba(28, 100, 148, 0.05)';" onmouseout="this.style.color='#64748B'; this.style.backgroundColor='transparent';">Tentang</a></li>
+        <li class="nav-item" style="margin: 0;"><a class="nav-link" href="#footer" style="
+          color: #64748B;
+          font-weight: 500;
+          font-size: 0.95rem;
+          padding: 12px 20px;
+          border-radius: 0;
+          transition: all 0.3s ease;
+          margin: 0;
+          display: block;
+          text-align: center;
+          border-top: 1px solid #f0f4f8;
+        " onmouseover="this.style.color='#1C6494'; this.style.backgroundColor='rgba(28, 100, 148, 0.05)';" onmouseout="this.style.color='#64748B'; this.style.backgroundColor='transparent';">Kontak</a></li>
+      </ul>
       </div>
 
     </div>

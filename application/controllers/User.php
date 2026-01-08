@@ -225,83 +225,43 @@ class User extends CI_Controller {
             exit;
         }
         
-        // ===== STEP 5: UPDATE DATABASE (Prepared Statement) =====
+        // ===== STEP 5: UPDATE DATABASE (Using CodeIgniter Query Builder) =====
         try {
             $updated_at = date('Y-m-d H:i:s');
             
-            // Build dynamic query
-            $update_fields = [];
-            $values = [];
+            // Prepare update data
+            $update_data = [];
             
             if (!empty($nama_usaha)) {
-                $update_fields[] = 'nama_usaha = ?';
-                $values[] = $nama_usaha;
+                $update_data['nama_usaha'] = $nama_usaha;
             }
             
             if (!empty($jenis_usaha)) {
-                $update_fields[] = 'jenis_usaha = ?';
-                $values[] = $jenis_usaha;
+                $update_data['jenis_usaha'] = $jenis_usaha;
             }
             
             // Always update timestamp
-            $update_fields[] = 'updated_at = ?';
-            $values[] = $updated_at;
+            $update_data['updated_at'] = $updated_at;
             
-            // Add id_user for WHERE clause
-            $values[] = $id_user;
+            // Update using CodeIgniter Query Builder
+            $this->db->where('id_user', $id_user);
+            $update_result = $this->db->update('user', $update_data);
             
-            // Build types string
-            $types = str_repeat('s', count($values) - 1) . 'i'; // s for strings, i for id_user
-            
-            // SQL query
-            $sql = 'UPDATE user SET ' . implode(', ', $update_fields) . ' WHERE id_user = ?';
-            
-            // Prepare statement
-            $stmt = $this->db->conn->prepare($sql);
-            
-            if (!$stmt) {
+            if (!$update_result) {
                 http_response_code(500);
                 echo json_encode([
                     'status' => 'error',
-                    'code' => 'PREPARE_ERROR',
-                    'message' => 'Gagal mempersiapkan query',
-                    'debug' => $this->db->conn->error
-                ]);
-                exit;
-            }
-            
-            // Bind parameters
-            if (!$stmt->bind_param($types, ...$values)) {
-                http_response_code(500);
-                echo json_encode([
-                    'status' => 'error',
-                    'code' => 'BIND_ERROR',
-                    'message' => 'Gagal binding parameter',
-                    'debug' => $stmt->error
-                ]);
-                $stmt->close();
-                exit;
-            }
-            
-            // Execute query
-            if (!$stmt->execute()) {
-                http_response_code(500);
-                echo json_encode([
-                    'status' => 'error',
-                    'code' => 'EXECUTE_ERROR',
+                    'code' => 'UPDATE_ERROR',
                     'message' => 'Gagal mengupdate database',
-                    'debug' => $stmt->error
+                    'debug' => $this->db->error()
                 ]);
-                $stmt->close();
                 exit;
             }
-            
-            $stmt->close();
             
             // ===== STEP 6: VERIFY DATA =====
-            $result = $this->db->conn->query('SELECT * FROM user WHERE id_user = ' . (int)$id_user);
+            $user = $this->db->get_where('user', ['id_user' => $id_user])->row_array();
             
-            if (!$result || $result->num_rows === 0) {
+            if (!$user) {
                 http_response_code(500);
                 echo json_encode([
                     'status' => 'error',
@@ -310,8 +270,6 @@ class User extends CI_Controller {
                 ]);
                 exit;
             }
-            
-            $user = $result->fetch_assoc();
             
             // ===== STEP 7: UPDATE SESSION =====
             if (!empty($nama_usaha)) {
@@ -347,6 +305,187 @@ class User extends CI_Controller {
             ]);
             exit;
         }
+    }
+
+    /**
+     * Halaman Profile Pengguna
+     */
+    public function profile($id = null)
+    {
+        if (!$this->session->userdata('id_user')) {
+            redirect('auth/login');
+        }
+
+        $id = $id ?: $this->session->userdata('id_user');
+        $user = $this->User_model->get($id);
+        
+        if (!$user) {
+            show_404();
+            return;
+        }
+
+        $data['user'] = $user;
+        
+        // Get activity data
+        $this->load->model('Al_advisor_model');
+        $data['advisor_count'] = $this->db->where('id_user', $id)->count_all_results('al_advisor');
+        $data['transaksi_count'] = $this->db->where('id_user', $id)->count_all_results('pencatatan_keuangan');
+        $data['analisis_count'] = $this->db->where('id_user', $id)->count_all_results('analisis_produk');
+        
+        // Get recent activities
+        $activities = [];
+        if ($data['advisor_count'] > 0) {
+            $activities[] = [
+                'title' => 'Konsultasi AI Advisor',
+                'description' => 'Anda telah melakukan ' . $data['advisor_count'] . ' kali konsultasi dengan AI Advisor',
+                'date' => date('Y-m-d H:i:s')
+            ];
+        }
+        
+        $data['activities'] = $activities;
+
+        $this->load->view('user/profile', $data);
+    }
+
+    /**
+     * Halaman Settings/Pengaturan
+     */
+    public function settings()
+    {
+        if (!$this->session->userdata('id_user')) {
+            redirect('auth/login');
+        }
+
+        $id_user = $this->session->userdata('id_user');
+        $user = $this->User_model->get($id_user);
+        
+        if (!$user) {
+            show_404();
+            return;
+        }
+
+        $data['user'] = $user;
+        $data['success'] = $this->session->flashdata('success_message');
+        $data['errors'] = $this->session->flashdata('error_messages') ?: [];
+
+        $this->load->view('user/settings', $data);
+    }
+
+    /**
+     * Update Profile User
+     */
+    public function update_profile($id = null)
+    {
+        if (!$this->session->userdata('id_user')) {
+            redirect('auth/login');
+        }
+
+        $id = $id ?: $this->session->userdata('id_user');
+        
+        if ($this->input->method() === 'post') {
+            $this->form_validation->set_rules('nama', 'Nama Lengkap', 'required|max_length[200]');
+            $this->form_validation->set_rules('nama_usaha', 'Nama Usaha', 'max_length[255]');
+            $this->form_validation->set_rules('jenis_usaha', 'Jenis Usaha', 'max_length[100]');
+
+            if ($this->form_validation->run() === TRUE) {
+                $update_data = [
+                    'nama' => $this->input->post('nama'),
+                    'nama_usaha' => $this->input->post('nama_usaha') ?: null,
+                    'jenis_usaha' => $this->input->post('jenis_usaha') ?: null,
+                    'updated_at' => date('Y-m-d H:i:s')
+                ];
+
+                if ($this->User_model->update($id, $update_data)) {
+                    // Update session
+                    $this->session->set_userdata('nama', $this->input->post('nama'));
+                    $this->session->set_userdata('nama_usaha', $this->input->post('nama_usaha'));
+                    
+                    $this->session->set_flashdata('success_message', 'Profil berhasil diperbarui!');
+                    redirect('user/settings');
+                } else {
+                    $this->session->set_flashdata('error_messages', ['Gagal memperbarui profil']);
+                    redirect('user/settings');
+                }
+            } else {
+                $this->session->set_flashdata('error_messages', $this->form_validation->error_array());
+                redirect('user/settings');
+            }
+        }
+
+        redirect('user/settings');
+    }
+
+    /**
+     * Ubah Password User
+     */
+    public function change_password()
+    {
+        if (!$this->session->userdata('id_user')) {
+            redirect('auth/login');
+        }
+
+        if ($this->input->method() === 'post') {
+            $id_user = $this->session->userdata('id_user');
+            $user = $this->User_model->get($id_user);
+
+            $this->form_validation->set_rules('password_lama', 'Password Lama', 'required|min_length[6]');
+            $this->form_validation->set_rules('password_baru', 'Password Baru', 'required|min_length[6]');
+            $this->form_validation->set_rules('konfirmasi_password', 'Konfirmasi Password', 'required|matches[password_baru]');
+
+            if ($this->form_validation->run() === TRUE) {
+                $password_lama = $this->input->post('password_lama');
+                $password_baru = $this->input->post('password_baru');
+
+                // Verify old password
+                if (password_verify($password_lama, $user->password)) {
+                    $update_data = [
+                        'password' => password_hash($password_baru, PASSWORD_BCRYPT),
+                        'updated_at' => date('Y-m-d H:i:s')
+                    ];
+
+                    if ($this->User_model->update($id_user, $update_data)) {
+                        $this->session->set_flashdata('success_message', 'Password berhasil diubah!');
+                        redirect('user/settings');
+                    } else {
+                        $this->session->set_flashdata('error_messages', ['Gagal mengubah password']);
+                        redirect('user/settings');
+                    }
+                } else {
+                    $this->session->set_flashdata('error_messages', ['Password lama tidak sesuai']);
+                    redirect('user/settings');
+                }
+            } else {
+                $this->session->set_flashdata('error_messages', $this->form_validation->error_array());
+                redirect('user/settings');
+            }
+        }
+
+        redirect('user/settings');
+    }
+
+    /**
+     * Hapus Akun User
+     */
+    public function delete_account($id = null)
+    {
+        if (!$this->session->userdata('id_user')) {
+            redirect('auth/login');
+        }
+
+        $id = $id ?: $this->session->userdata('id_user');
+
+        if ($this->input->method() === 'post') {
+            if ($this->User_model->delete($id)) {
+                $this->session->sess_destroy();
+                $this->session->set_flashdata('success', 'Akun berhasil dihapus.');
+                redirect('auth/login');
+            } else {
+                $this->session->set_flashdata('error', 'Gagal menghapus akun');
+                redirect('user/settings');
+            }
+        }
+
+        redirect('user/settings');
     }
 }
 

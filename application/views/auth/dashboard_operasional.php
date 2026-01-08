@@ -211,10 +211,10 @@ body {
 
 .sidebar-footer-btn {
     flex: 1;
-    padding: 8px 12px;
-    border: 1px solid var(--border-color);
+    padding: 10px 12px;
+    border: none;
     border-radius: 8px;
-    background: none;
+    background: var(--background);
     color: var(--text-secondary);
     cursor: pointer;
     transition: all 0.3s;
@@ -223,8 +223,18 @@ body {
 }
 
 .sidebar-footer-btn:hover {
-    background: var(--background);
-    color: var(--primary-color);
+    background: var(--text-secondary);
+    color: #fff;
+}
+
+.sidebar-footer-btn.logout-btn {
+    background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+    color: #fff;
+}
+
+.sidebar-footer-btn.logout-btn:hover {
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    transform: translateY(-2px);
 }
 
 /* MAIN CONTENT WRAPPER */
@@ -242,7 +252,7 @@ body.sidebar-collapsed .main-wrapper {
 
 /* TOP HEADER */
 .top-header {
-    background: linear-gradient(135deg, #FFFFFF 0%, var(--primary-very-light) 100%);
+    background: #FFFFFF;
     border-bottom: 1px solid var(--border-color);
     padding: 16px 32px;
     display: flex;
@@ -263,10 +273,11 @@ body.sidebar-collapsed .main-wrapper {
 }
 
 .header-title {
-    font-size: 18px;
-    font-weight: 700;
+    font-size: 20px;
+    font-weight: 800;
     color: var(--primary-color);
     white-space: nowrap;
+    letter-spacing: -0.5px;
 }
 
 .header-search {
@@ -414,6 +425,123 @@ body.sidebar-collapsed .main-wrapper {
 /* HIDE OLD NAVBAR */
 .navbar-main {
     display: none;
+}
+
+/* ===== LOGOUT MODAL ===== */
+.logout-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.3s ease;
+}
+
+.logout-modal.show {
+    display: flex;
+}
+
+.logout-modal-content {
+    background: #fff;
+    border-radius: 16px;
+    padding: 40px 32px;
+    max-width: 420px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.logout-modal-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 20px;
+    background: #FEE2E2;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+}
+
+.logout-modal h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 12px;
+    letter-spacing: -0.3px;
+}
+
+.logout-modal p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-bottom: 28px;
+    line-height: 1.5;
+}
+
+.logout-modal-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.logout-btn-confirm {
+    flex: 1;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+    color: #fff;
+}
+
+.logout-btn-confirm:hover {
+    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+    transform: translateY(-2px);
+}
+
+.logout-btn-cancel {
+    flex: 1;
+    padding: 12px 24px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.logout-btn-cancel:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background: var(--primary-very-light);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* RESPONSIVE DESIGN */
@@ -1838,6 +1966,149 @@ body.sidebar-collapsed .main-wrapper {
     color: var(--primary-color);
 }
 
+/* ===== SUBSCRIPTION MODAL ===== */
+.subscription-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.3s ease;
+}
+
+.subscription-modal.show {
+    display: flex;
+}
+
+.subscription-modal-content {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 600px;
+    animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.subscription-modal-header {
+    padding: 24px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #FEF3C7 0%, #FCD34D 100%);
+}
+
+.subscription-modal-header h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #78350F;
+    margin: 0;
+}
+
+.subscription-modal-close {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.3);
+    color: #78350F;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.subscription-modal-close:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.subscription-modal-body {
+    padding: 28px;
+}
+
+.subscription-item {
+    margin-bottom: 20px;
+}
+
+.subscription-item label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.subscription-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    padding: 12px 16px;
+    background: var(--background);
+    border-radius: 8px;
+    border-left: 3px solid var(--primary-color);
+}
+
+.subscription-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+    color: #065F46;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid #6EE7B7;
+}
+
+.subscription-modal-footer {
+    padding: 20px 28px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.subscription-modal-btn {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.subscription-modal-btn.primary {
+    background: linear-gradient(135deg, #1F6B99 0%, #154A6F 100%);
+    color: white;
+}
+
+.subscription-modal-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(31, 107, 153, 0.3);
+}
+
+.subscription-modal-btn.secondary {
+    background: var(--background);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.subscription-modal-btn.secondary:hover {
+    background: #f1f5f9;
+}
+
 /* ===== PROFILE MODAL ===== */
 .profile-modal {
     display: none;
@@ -2097,8 +2368,8 @@ body.sidebar-collapsed .main-wrapper {
         </div>
     </div>
     
-        <a href="<?= site_url('auth/change_dashboard'); ?>" class="sidebar-footer-btn" style="text-align: center; text-decoration: none;">🏢</a>
-        <button class="sidebar-footer-btn" onclick="if(confirm('Yakin ingin logout?')) window.location.href='<?= site_url('auth/logout'); ?>'">
+        <a href="<?= site_url('auth/change_dashboard'); ?>" class="sidebar-footer-btn" style="text-align: center; text-decoration: none;">⊕</a>
+        <button class="sidebar-footer-btn logout-btn" onclick="showLogoutModal()">
             Logout
         </button>
     </div>
@@ -2109,15 +2380,15 @@ body.sidebar-collapsed .main-wrapper {
     <!-- TOP HEADER -->
     <header class="top-header">
         <div class="header-left">
-            <button class="sidebar-toggle" id="mobileMenuBtn" style="display: none; font-size: 20px; width: auto; border: none; background: none; color: var(--text-secondary); cursor: pointer;">☰</button>
-            <div class="header-title">Dashboard Operasional</div>
+            <button class="sidebar-toggle" id="mobileMenuBtn" style="display: none; font-size: 20px; width: auto; border: none; background: none; color: var(--text-secondary); cursor: pointer;">≡</button>
+            <div class="header-title">Operasional Bisnis</div>
             <div class="header-search">
                 <input type="text" placeholder="Cari...">
             </div>
         </div>
         
         <div class="header-right">
-            <button class="header-icon-btn" title="Notifikasi">🔔</button>
+            <button class="header-icon-btn" title="Notifikasi">•</button>
             <div class="header-divider"></div>
             <div class="header-user" onclick="openProfileModal()" style="cursor: pointer;">
                 <div class="header-user-avatar"><?= strtoupper(substr($user['nama'], 0, 1)); ?></div>
@@ -3170,6 +3441,49 @@ window.addEventListener('resize', updateResponsive);
     </div>
 </div>
 
+<!-- SUBSCRIPTION MODAL -->
+<div class="subscription-modal" id="subscriptionModal">
+    <div class="subscription-modal-content">
+        <div class="subscription-modal-header">
+            <h2>✨ Status Langganan</h2>
+            <button class="subscription-modal-close" onclick="closeSubscriptionModal()">✕</button>
+        </div>
+        <div class="subscription-modal-body">
+            <div class="subscription-item">
+                <label>Paket Saat Ini</label>
+                <div class="subscription-value">Premium Plan</div>
+            </div>
+            <div class="subscription-item">
+                <label>Status</label>
+                <div class="subscription-status-badge">
+                    <span>●</span> Aktif
+                </div>
+            </div>
+            <div class="subscription-item">
+                <label>Tanggal Berakhir</label>
+                <div class="subscription-value">15 April 2026</div>
+            </div>
+            <div class="subscription-item">
+                <label>Fitur Premium</label>
+                <div style="margin-top: 8px;">
+                    <div style="padding: 12px; background: var(--background); border-radius: 8px; font-size: 13px; line-height: 1.6; color: var(--text-secondary);">
+                        ✓ Analitik Lanjutan<br>
+                        ✓ Export Data Unlimited<br>
+                        ✓ Support Prioritas 24/7<br>
+                        ✓ Custom Report<br>
+                        ✓ API Access<br>
+                        ✓ Team Collaboration
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="subscription-modal-footer">
+            <button class="subscription-modal-btn secondary" onclick="closeSubscriptionModal()">Tutup</button>
+            <button class="subscription-modal-btn primary" onclick="upgradeSubscription()">Lihat Paket Lain</button>
+        </div>
+    </div>
+</div>
+
 <script>
 function openProfileModal() {
     document.getElementById('profileModal').classList.add('show');
@@ -3180,9 +3494,15 @@ function closeProfileModal() {
 }
 
 function openSubscriptionModal() {
-    alert('Membuka halaman manajemen paket langganan...');
-    // Dapat diarahkan ke halaman subscription jika diperlukan
-    // window.location.href = '<?= site_url('user/subscription'); ?>';
+    document.getElementById('subscriptionModal').classList.add('show');
+}
+
+function closeSubscriptionModal() {
+    document.getElementById('subscriptionModal').classList.remove('show');
+}
+
+function upgradeSubscription() {
+    window.location.href = '<?= site_url('subscription/pricing'); ?>';
 }
 
 // Close modal when clicking outside
@@ -3191,7 +3511,49 @@ document.getElementById('profileModal').addEventListener('click', function(e) {
         closeProfileModal();
     }
 });
+
+// Close subscription modal when clicking outside
+if (document.getElementById('subscriptionModal')) {
+    document.getElementById('subscriptionModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeSubscriptionModal();
+        }
+    });
+}
+
+// Logout Modal Functions
+function showLogoutModal() {
+    document.getElementById('logoutModal').classList.add('show');
+}
+
+function closeLogoutModal() {
+    document.getElementById('logoutModal').classList.remove('show');
+}
+
+function confirmLogout() {
+    window.location.href = "<?= site_url('auth/logout'); ?>";
+}
+
+// Close logout modal when clicking outside
+document.getElementById('logoutModal')?.addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeLogoutModal();
+    }
+});
 </script>
+
+<!-- LOGOUT MODAL -->
+<div class="logout-modal" id="logoutModal">
+    <div class="logout-modal-content">
+        <div class="logout-modal-icon">!!</div>
+        <h2>Yakin ingin keluar?</h2>
+        <p>Anda akan logout dari akun Anda. Pastikan sudah menyimpan semua pekerjaan Anda sebelum keluar.</p>
+        <div class="logout-modal-buttons">
+            <button class="logout-btn-confirm" onclick="confirmLogout()">Keluar Sekarang</button>
+            <button class="logout-btn-cancel" onclick="closeLogoutModal()">Batal</button>
+        </div>
+    </div>
+</div>
 
 </main>
 </div>

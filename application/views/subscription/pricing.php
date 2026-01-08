@@ -109,9 +109,9 @@
                                 title: 'Pembayaran Berhasil!',
                                 text: 'Langganan Anda telah diaktifkan.',
                                 confirmButtonColor: '#1F6B99',
-                                confirmButtonText: 'Pilih Dashboard'
+                                confirmButtonText: 'Lanjut ke Dashboard'
                             }).then(() => {
-                                window.location.href = '<?php echo site_url('dashboard_selection'); ?>';
+                                window.location.href = '<?php echo site_url('auth/dashboard_operasional'); ?>';
                             });
                         })
                         .catch(err => {

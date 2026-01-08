@@ -557,7 +557,7 @@
         
         const data = await response.json();
         
-        if (data.success) {
+        if (data.status === 'success' || data.success === true) {
           // Show success message
           document.getElementById('successText').textContent = 
             data.message || 'Informasi bisnis berhasil disimpan!';
@@ -576,17 +576,15 @@
       } catch (error) {
         console.error('Error:', error);
         
-        // Jika error network, tetap lanjut (data mungkin tersimpan)
-        if (error.message.includes('Network')) {
-          showError('error_nama_usaha', 'Koneksi bermasalah. Data mungkin sudah tersimpan.');
-          setTimeout(() => {
-            window.location.href = '<?= site_url('dashboard/perencanaan'); ?>';
-          }, 2000);
-        } else {
-          showError('error_nama_usaha', 'Terjadi kesalahan. Silakan coba lagi.');
-          submitBtn.disabled = false;
-          submitBtn.classList.remove('loading');
+        // Show detailed error message
+        let errorMessage = 'Gagal menyimpan data. Server response tidak valid JSON. Check console (F12).';
+        if (error.message) {
+          errorMessage = error.message;
         }
+        
+        showError('error_nama_usaha', errorMessage);
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('loading');
       }
     });
     

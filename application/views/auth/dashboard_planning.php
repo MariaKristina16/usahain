@@ -171,10 +171,10 @@ $user = array_merge([
 
         .sidebar-footer-btn {
             flex: 1;
-            padding: 8px 12px;
-            border: 1px solid var(--border);
+            padding: 10px 12px;
+            border: none;
             border-radius: 8px;
-            background: none;
+            background: var(--bg);
             color: var(--text-secondary);
             cursor: pointer;
             font-size: 12px;
@@ -183,8 +183,18 @@ $user = array_merge([
         }
 
         .sidebar-footer-btn:hover {
-            background: var(--bg);
-            color: var(--primary);
+            background: var(--text-secondary);
+            color: #fff;
+        }
+
+        .sidebar-footer-btn.logout-btn {
+            background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+            color: #fff;
+        }
+
+        .sidebar-footer-btn.logout-btn:hover {
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+            transform: translateY(-2px);
         }
 
         /* ===== MAIN WRAPPER ===== */
@@ -200,7 +210,7 @@ $user = array_merge([
 
         /* ===== TOP HEADER ===== */
         .top-header {
-            background: linear-gradient(135deg, #fff 0%, var(--primary-very-light) 100%);
+            background: #fff;
             border-bottom: 1px solid var(--border);
             padding: 16px 32px;
             display: flex;
@@ -214,7 +224,7 @@ $user = array_merge([
         }
 
         .header-left { display: flex; align-items: center; gap: 16px; flex: 1; }
-        .header-title { font-size: 18px; font-weight: 700; color: var(--primary); }
+        .header-title { font-size: 20px; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; }
 
         .header-right {
             display: flex;
@@ -685,6 +695,108 @@ $user = array_merge([
         .upgrade-btn-secondary:hover {
             background: var(--primary-very-light);
         }
+
+        /* ===== LOGOUT MODAL ===== */
+        .logout-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .logout-modal.show {
+            display: flex;
+        }
+
+        .logout-modal-content {
+            background: #fff;
+            border-radius: 16px;
+            padding: 40px 32px;
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .logout-modal-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 20px;
+            background: #FEE2E2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .logout-modal h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 12px;
+            letter-spacing: -0.3px;
+        }
+
+        .logout-modal p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-bottom: 28px;
+            line-height: 1.5;
+        }
+
+        .logout-modal-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .logout-btn-confirm {
+            flex: 1;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+            color: #fff;
+        }
+
+        .logout-btn-confirm:hover {
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .logout-btn-cancel {
+            flex: 1;
+            padding: 12px 24px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: #fff;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logout-btn-cancel:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--primary-very-light);
+        }
+
         @media (max-width: 1024px) {
             .tools-grid, .guide-grid { grid-template-columns: repeat(2, 1fr); }
             .sidebar { width: 200px; }
@@ -757,8 +869,8 @@ $user = array_merge([
         </ul>
 
         <div class="sidebar-footer">
-            <button class="sidebar-footer-btn" id="opsBtn" style="display: none;" onclick="window.location.href='<?= site_url('auth/change_dashboard'); ?>'">Ops</button>
-            <button class="sidebar-footer-btn" onclick="if(confirm('Yakin ingin logout?')) window.location.href='<?= site_url('auth/logout'); ?>'">Logout</button>
+            <button class="sidebar-footer-btn" id="opsBtn" style="display: none;" onclick="window.location.href='<?= site_url('auth/change_dashboard'); ?>'">Switch</button>
+            <button class="sidebar-footer-btn logout-btn" onclick="showLogoutModal()">Logout</button>
         </div>
     </aside>
 
@@ -767,10 +879,10 @@ $user = array_merge([
         <!-- TOP HEADER -->
         <div class="top-header">
             <div class="header-left">
-                <div class="header-title">🎯 Dashboard Perencanaan</div>
+                <div class="header-title">Perencanaan Bisnis</div>
             </div>
             <div class="header-right">
-                <button class="header-icon-btn" title="Notifikasi">🔔</button>
+                <button class="header-icon-btn" title="Notifikasi">•</button>
                 <div class="header-divider"></div>
                 <div class="header-user">
                     <div class="header-user-avatar"><?= strtoupper(substr($user['nama'] ?? 'U', 0, 1)); ?></div>
@@ -937,7 +1049,7 @@ $user = array_merge([
     <!-- UPGRADE MODAL -->
     <div class="upgrade-modal" id="upgradeModal">
         <div class="upgrade-modal-content">
-            <div class="upgrade-icon">🎉</div>
+            <div class="upgrade-icon">✓</div>
             <h2>Selamat!</h2>
             <p>Anda sudah melewati tahap perencanaan! Saatnya ke level selanjutnya dan mulai mengoperasionalkan bisnis Anda.</p>
             <div class="upgrade-modal-buttons">
@@ -947,6 +1059,19 @@ $user = array_merge([
                 <button class="upgrade-btn upgrade-btn-secondary" onclick="closeUpgradeModal()">
                     Nanti Saja
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOGOUT MODAL -->
+    <div class="logout-modal" id="logoutModal">
+        <div class="logout-modal-content">
+            <div class="logout-modal-icon">!!</div>
+            <h2>Yakin ingin keluar?</h2>
+            <p>Anda akan logout dari akun Anda. Pastikan sudah menyimpan semua pekerjaan Anda sebelum keluar.</p>
+            <div class="logout-modal-buttons">
+                <button class="logout-btn-confirm" onclick="confirmLogout()">Keluar Sekarang</button>
+                <button class="logout-btn-cancel" onclick="closeLogoutModal()">Batal</button>
             </div>
         </div>
     </div>
@@ -1030,6 +1155,26 @@ $user = array_merge([
         window.addEventListener('resize', function() {
             if (window.innerWidth > 768) {
                 document.querySelector('.sidebar').classList.remove('mobile-open');
+            }
+        });
+
+        // Logout Modal Functions
+        function showLogoutModal() {
+            document.getElementById('logoutModal').classList.add('show');
+        }
+
+        function closeLogoutModal() {
+            document.getElementById('logoutModal').classList.remove('show');
+        }
+
+        function confirmLogout() {
+            window.location.href = "<?= site_url('auth/logout'); ?>";
+        }
+
+        // Close logout modal when clicking outside
+        document.getElementById('logoutModal')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeLogoutModal();
             }
         });
     </script>
