@@ -8,46 +8,52 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #4A90E2;
-            --success: #27ae60;
-            --danger: #e74c3c;
-            --warning: #f39c12;
-            --bg: #F5F8FA;
+            --primary: #1F6B99;
+            --primary-dark: #154A6F;
+            --primary-light: #E8F4FB;
+            --secondary: #7EC8E3;
+            --success: #10B981;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+            --text: #1E293B;
+            --text-secondary: #64748B;
+            --bg: #F8FAFC;
             --card: #FFFFFF;
-            --muted: #7f8c8d;
-            --shadow: 0 4px 16px rgba(74,144,226,0.08);
+            --border: #E2E8F0;
+            --shadow: 0 4px 12px rgba(31,107,153,0.1);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', Arial, sans-serif; background: var(--bg); color: #2D3748; }
-        nav { background: linear-gradient(90deg, var(--primary), #7EC8E3); color: #fff; padding: 18px 32px; font-size: 1.1rem; display: flex; align-items: center; }
+        body { font-family: 'Inter', Arial, sans-serif; background: var(--bg); color: var(--text); }
+        nav { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; padding: 18px 32px; font-size: 1.1rem; display: flex; align-items: center; }
         nav a { color: #fff; margin-right: 28px; text-decoration: none; font-weight: 600; transition: color 0.2s; }
-        nav a:hover { color: #dbeafe; }
+        nav a:hover { color: rgba(255,255,255,0.8); }
         nav .logout { margin-left: auto; }
         .container { max-width: 1100px; margin: 32px auto; padding: 0 18px; }
-        .card { background: var(--card); border-radius: 16px; box-shadow: var(--shadow); padding: 32px 28px; margin-bottom: 32px; }
+        .card { background: var(--card); border-radius: 12px; box-shadow: var(--shadow); padding: 32px 28px; margin-bottom: 32px; }
         .header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-bottom: 24px; gap: 12px; }
-        .header h2 { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
-        .btn { display: inline-block; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 1rem; border: none; cursor: pointer; transition: background 0.2s; }
+        .header h2 { font-size: 1.5rem; font-weight: 700; color: var(--primary-dark); }
+        .btn { display: inline-block; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1rem; border: none; cursor: pointer; transition: all 0.3s; }
         .btn-success { background: var(--success); color: #fff; }
-        .btn-primary { background: var(--primary); color: #fff; }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: #fff; }
         .btn-warning { background: var(--warning); color: #fff; }
         .btn-danger { background: var(--danger); color: #fff; }
-        .btn:hover { opacity: 0.92; }
+        .btn:hover { opacity: 0.92; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(31,107,153,0.2); }
         .summary-row { display: flex; gap: 18px; margin-bottom: 18px; }
-        .summary-card { background: #eaf2ff; border-radius: 12px; padding: 18px 24px; flex: 1; text-align: center; box-shadow: 0 2px 8px rgba(74,144,226,0.08); }
-        .summary-card .label { color: var(--muted); font-size: 1rem; margin-bottom: 4px; }
-        .summary-card .value { font-size: 1.3rem; font-weight: 700; color: var(--primary); }
+        .summary-card { background: var(--primary-light); border-radius: 12px; padding: 18px 24px; flex: 1; text-align: center; box-shadow: 0 2px 8px rgba(31,107,153,0.08); border-left: 4px solid var(--primary); }
+        .summary-card .label { color: var(--text-secondary); font-size: 1rem; margin-bottom: 4px; }
+        .summary-card .value { font-size: 1.3rem; font-weight: 700; color: var(--primary-dark); }
         .filter-row { display: flex; gap: 12px; margin-bottom: 18px; }
-        .filter-row input[type="text"] { flex: 2; padding: 12px 16px; border-radius: 8px; border: 1.5px solid #e2e8f0; font-size: 1rem; background: #f7fafc; }
-        .filter-row select { flex: 1; padding: 12px 16px; border-radius: 8px; border: 1.5px solid #e2e8f0; font-size: 1rem; background: #f7fafc; }
+        .filter-row input[type="text"] { flex: 2; padding: 12px 16px; border-radius: 8px; border: 1.5px solid var(--border); font-size: 1rem; background: #fff; color: var(--text); }
+        .filter-row select { flex: 1; padding: 12px 16px; border-radius: 8px; border: 1.5px solid var(--border); font-size: 1rem; background: #fff; color: var(--text); }
+        .filter-row input:focus, .filter-row select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(31,107,153,0.1); }
         table { width: 100%; border-collapse: collapse; margin-top: 18px; font-size: 1rem; }
-        th, td { padding: 14px 10px; border-bottom: 1px solid #e2e8f0; text-align: left; }
-        th { background: #f7fafc; color: var(--primary); font-weight: 700; }
+        th, td { padding: 14px 10px; border-bottom: 1px solid var(--border); text-align: left; }
+        th { background: var(--primary-light); color: var(--primary-dark); font-weight: 700; }
         .currency { text-align: right; font-weight: 600; }
-        .badge { display: inline-block; padding: 4px 12px; border-radius: 8px; font-size: 0.98em; font-weight: 600; }
-        .badge.success { background: #e6f9ed; color: var(--success); }
-        .badge.danger { background: #ffecec; color: var(--danger); }
-        .badge.warning { background: #fff5e6; color: var(--warning); }
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 6px; font-size: 0.85em; font-weight: 600; }
+        .badge.success { background: #D1FAE5; color: #065F46; }
+        .badge.danger { background: #FEE2E2; color: #991B1B; }
+        .badge.warning { background: #FEF3C7; color: #92400E; }
         .alert { padding: 14px; margin-bottom: 20px; border-radius: 8px; font-size: 1rem; }
         .alert-success { background: #d4edda; color: #155724; }
         @media (max-width: 900px) {

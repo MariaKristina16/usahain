@@ -397,7 +397,7 @@
         <div class="navbar-container">
             <div class="navbar-left">
                 <a href="<?= site_url('admin/dashboard'); ?>" class="navbar-brand">
-                    <span class="navbar-logo"><img src="<?= base_url('assets/logo_usahain.png'); ?>" alt="Usahain"></span>
+                    <span class="navbar-logo"><img src="<?= base_url('assets/logo.png'); ?>" alt="Usahain"></span>
                     <span class="navbar-title">Usahain Admin</span>
                 </a>
             </div>

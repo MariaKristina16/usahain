@@ -125,8 +125,15 @@ $transactions = $transactions ?? [];
 
     <!-- WELCOME -->
     <div class="welcome">
-        <h1>Selamat Datang, <?= htmlspecialchars($user['nama']); ?> 👋</h1>
-        <p><?= htmlspecialchars($user['usaha']); ?> • <?= htmlspecialchars($user['type']); ?></p>
+        <div style="display: flex; justify-content: space-between; align-items: start;">
+            <div>
+                <h1>Selamat Datang, <?= htmlspecialchars($user['nama']); ?> 👋</h1>
+                <p><?= htmlspecialchars($user['usaha']); ?> • <?= htmlspecialchars($user['type']); ?></p>
+            </div>
+            <button type="button" onclick="openEditBisnis()" style="background: #2b7ec9; color: white; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.3s;">
+                ✏️ Edit Informasi Bisnis
+            </button>
+        </div>
     </div>
 
     <!-- SUMMARY -->
@@ -182,3 +189,100 @@ $transactions = $transactions ?? [];
 
 </body>
 </html>
+
+<!-- Modal Edit Informasi Bisnis -->
+<div id="modalEditBisnis" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.3); z-index:1000; display:flex; align-items:center; justify-content:center;">
+  <div style="background:white; border-radius:12px; padding:24px; max-width:500px; width:90%; box-shadow: 0 10px 40px rgba(0,0,0,0.15);">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+      <h2 style="color:#2b7ec9; font-size:20px;">Edit Informasi Bisnis</h2>
+      <button type="button" onclick="closeEditBisnis()" style="background:none; border:none; font-size:24px; cursor:pointer; color:#999;">×</button>
+    </div>
+    
+    <form id="formEditBisnis">
+      <div style="margin-bottom:16px;">
+        <label style="font-weight:600; color:#333; display:block; margin-bottom:6px;">Nama Usaha</label>
+        <input type="text" id="edit_nama_usaha" name="nama_usaha" placeholder="Contoh: Warung Makan Berkah" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; font-size:14px;">
+      </div>
+      
+      <div style="margin-bottom:20px;">
+        <label style="font-weight:600; color:#333; display:block; margin-bottom:6px;">Jenis Usaha</label>
+        <input type="text" id="edit_jenis_usaha" name="jenis_usaha" placeholder="Contoh: Kuliner, Fashion, Jasa, etc" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; font-size:14px;">
+      </div>
+      
+      <div style="display:flex; gap:12px;">
+        <button type="button" onclick="closeEditBisnis()" style="flex:1; background:#f0f0f0; border:none; padding:10px; border-radius:8px; cursor:pointer; font-weight:600; color:#333;">Batal</button>
+        <button type="submit" style="flex:1; background:#2b7ec9; border:none; padding:10px; border-radius:8px; cursor:pointer; font-weight:600; color:white;">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function openEditBisnis() {
+  const modal = document.getElementById('modalEditBisnis');
+  modal.style.display = 'flex';
+  
+  // Get current values from session/page if available
+  const usaha = document.querySelector('.welcome p')?.textContent || '';
+  document.getElementById('edit_nama_usaha').value = usaha.split('•')[0]?.trim() || '';
+}
+
+function closeEditBisnis() {
+  document.getElementById('modalEditBisnis').style.display = 'none';
+}
+
+// Close modal when clicking outside
+document.addEventListener('click', function(event) {
+  const modal = document.getElementById('modalEditBisnis');
+  if (event.target === modal) {
+    closeEditBisnis();
+  }
+});
+
+document.getElementById('formEditBisnis').onsubmit = function(e) {
+  e.preventDefault();
+  
+  const nama_usaha = document.getElementById('edit_nama_usaha').value.trim();
+  const jenis_usaha = document.getElementById('edit_jenis_usaha').value.trim();
+  
+  const submitBtn = this.querySelector('button[type="submit"]');
+  const originalText = submitBtn.textContent;
+  submitBtn.disabled = true;
+  submitBtn.textContent = '⏳ Menyimpan...';
+  
+  fetch('<?= site_url('user/save_bisnis_info'); ?>', {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+      'X-Requested-With': 'XMLHttpRequest'
+    },
+    body: JSON.stringify({
+      nama_usaha: nama_usaha,
+      jenis_usaha: jenis_usaha
+    })
+  })
+  .then(response => {
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      throw new Error('Response bukan JSON');
+    }
+    return response.json().then(data => ({ status: response.status, data: data }));
+  })
+  .then(({ status, data }) => {
+    if (data.status === 'success' && status === 200) {
+      alert('✅ Data berhasil disimpan!');
+      closeEditBisnis();
+      location.reload(); // Refresh untuk update tampilan
+    } else {
+      alert('Error: ' + (data.message || 'Gagal menyimpan'));
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
+    }
+  })
+  .catch(err => {
+    alert('Gagal menyimpan data: ' + err.message);
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalText;
+  });
+};
+</script>

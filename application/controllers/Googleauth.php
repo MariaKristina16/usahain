@@ -16,6 +16,7 @@ class Googleauth extends CI_Controller
 {
 
     private $google_client;
+    private $google_service;
 
     public function __construct()
     {
@@ -33,32 +34,53 @@ class Googleauth extends CI_Controller
      */
     private function _init_google_client()
     {
-        // Load autoloader from composer
-        require_once FCPATH . 'vendor/autoload.php';
+        try {
+            // Load autoloader from composer
+            $autoload_path = FCPATH . 'vendor/autoload.php';
+            if (!file_exists($autoload_path)) {
+                log_message('error', 'Composer autoload not found: ' . $autoload_path);
+                return false;
+            }
+            require_once $autoload_path;
 
-        // Get credentials from config
-        $client_id     = $this->config->item('google_client_id');
-        $client_secret = $this->config->item('google_client_secret');
+            // Get credentials from config
+            $client_id     = trim($this->config->item('google_client_id') ?? '');
+            $client_secret = trim($this->config->item('google_client_secret') ?? '');
 
-        // Validate credentials are set
-        if (empty($client_id) || empty($client_secret)) {
-            log_message('error', 'Google OAuth credentials not configured');
+            // Log for debugging
+            log_message('debug', 'Google OAuth: ID length ' . strlen($client_id) . ', Secret length ' . strlen($client_secret));
+
+            // Validate credentials are set
+            if (empty($client_id) || empty($client_secret)) {
+                log_message('error', 'Google OAuth credentials empty');
+                log_message('error', 'Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in .env file at: ' . FCPATH . '.env');
+                return false;
+            }
+
+            // Check if Google_Client class exists
+            if (!class_exists('Google_Client')) {
+                log_message('error', 'Google_Client class not found. Run: composer install');
+                return false;
+            }
+
+            // Create and configure Google Client
+            $this->google_client = new Google_Client();
+            $this->google_client->setClientId($client_id);
+            $this->google_client->setClientSecret($client_secret);
+            $this->google_client->setRedirectUri($this->config->item('google_redirect_uri'));
+            $this->google_client->setScopes($this->config->item('google_scopes'));
+            $this->google_client->setAccessType($this->config->item('google_access_type'));
+            
+            // Use setPrompt untuk force account selection
+            $this->google_client->setPrompt('select_account');
+
+            log_message('info', 'Google_Client initialized successfully');
+            return true;
+        } catch (Exception $e) {
+            log_message('error', 'Google Client init error: ' . $e->getMessage());
+            log_message('error', 'Class: ' . get_class($e));
             return false;
         }
-
-        $this->google_client = new Google_Client();
-        $this->google_client->setClientId($client_id);
-        $this->google_client->setClientSecret($client_secret);
-        $this->google_client->setRedirectUri($this->config->item('google_redirect_uri'));
-        $this->google_client->setScopes($this->config->item('google_scopes'));
-        $this->google_client->setAccessType($this->config->item('google_access_type'));
-        $this->google_client->setApprovalPrompt($this->config->item('google_approval_prompt'));
-
-        // Force account selection on every login (no auto-login)
-        // This will display Google Account Picker
-        $this->google_client->setPrompt('select_account');
-
-        return true;
     }
 
     /**
@@ -67,28 +89,38 @@ class Googleauth extends CI_Controller
     public function login()
     {
         // Check if OAuth is configured
-        if (! $this->google_client) {
-            $this->session->set_flashdata('error',
-                'Google OAuth belum dikonfigurasi. Silakan hubungi administrator.<br>' .
-                '<small>Setup: Edit file .env dan tambahkan GOOGLE_CLIENT_ID dan GOOGLE_CLIENT_SECRET</small>');
+        if (!$this->google_client) {
+            log_message('error', 'Google OAuth not initialized - credentials missing or config failed');
+            $error_msg = 'Google OAuth tidak tersedia.<br>' .
+                '<small>Fix: Edit file .env di root project, tambahkan:<br>' .
+                'GOOGLE_CLIENT_ID=xxx<br>' .
+                'GOOGLE_CLIENT_SECRET=xxx</small>';
+            $this->session->set_flashdata('error', $error_msg);
             redirect('auth/login');
             return;
         }
 
-        // Save redirect parameter to session if provided
-        $redirect = $this->input->get('redirect');
-        if ($redirect) {
-            $this->session->set_userdata('oauth_redirect', $redirect);
+        try {
+            // Save redirect parameter to session if provided
+            $redirect = $this->input->get('redirect');
+            if ($redirect && filter_var($redirect, FILTER_VALIDATE_URL)) {
+                $this->session->set_userdata('oauth_redirect', $redirect);
+            }
+
+            // Create state token to prevent CSRF
+            $state = bin2hex(random_bytes(16));
+            $this->session->set_userdata('oauth_state', $state);
+            $this->google_client->setState($state);
+
+            // Generate and redirect to auth URL
+            $auth_url = $this->google_client->createAuthUrl();
+            redirect($auth_url);
+
+        } catch (Exception $e) {
+            log_message('error', 'Google OAuth Login Error: ' . $e->getMessage());
+            $this->session->set_flashdata('error', 'Terjadi kesalahan saat menghubungkan ke Google: ' . $e->getMessage());
+            redirect('auth/login');
         }
-
-        // Create state token to prevent CSRF
-        $state = bin2hex(random_bytes(16));
-        $this->session->set_userdata('oauth_state', $state);
-        $this->google_client->setState($state);
-
-        // Generate and redirect to auth URL
-        $auth_url = $this->google_client->createAuthUrl();
-        redirect($auth_url);
     }
 
     /**
@@ -96,41 +128,76 @@ class Googleauth extends CI_Controller
      */
     public function callback()
     {
-        // Verify state to prevent CSRF
-        $state         = $this->input->get('state');
-        $session_state = $this->session->userdata('oauth_state');
-
-        if (! $state || $state !== $session_state) {
-            $this->session->set_flashdata('error', 'Invalid state parameter. Possible CSRF attack.');
-            redirect('auth/login');
-            return;
-        }
-
-        // Clear state from session
-        $this->session->unset_userdata('oauth_state');
-
-        // Check for error from Google
-        if ($this->input->get('error')) {
-            $this->session->set_flashdata('error', 'Google authentication cancelled or failed.');
-            redirect('auth/login');
-            return;
-        }
-
-        // Get authorization code
-        $code = $this->input->get('code');
-        if (! $code) {
-            $this->session->set_flashdata('error', 'No authorization code received from Google.');
-            redirect('auth/login');
-            return;
-        }
-
         try {
+            // Verify state to prevent CSRF
+            $state         = $this->input->get('state');
+            $session_state = $this->session->userdata('oauth_state');
+
+            if (!$state || $state !== $session_state) {
+                log_message('error', 'CSRF attack detected. State mismatch in OAuth callback');
+                $this->session->set_flashdata('error', 'Invalid state parameter. Possible CSRF attack.');
+                redirect('auth/login');
+                return;
+            }
+
+            // Clear state from session
+            $this->session->unset_userdata('oauth_state');
+
+            // Check for error from Google
+            $error = $this->input->get('error');
+            if ($error) {
+                $error_description = $this->input->get('error_description', 'Unknown error');
+                log_message('error', 'Google OAuth Error: ' . $error . ' - ' . $error_description);
+                $this->session->set_flashdata('error', 'Google authentication cancelled or failed: ' . $error_description);
+                redirect('auth/login');
+                return;
+            }
+
+            // Get authorization code
+            $code = $this->input->get('code');
+            if (!$code) {
+                log_message('error', 'No authorization code received from Google');
+                $this->session->set_flashdata('error', 'No authorization code received from Google.');
+                redirect('auth/login');
+                return;
+            }
+
             // Exchange authorization code for access token
-            $token = $this->google_client->fetchAccessTokenWithAuthCode($code);
+            try {
+                log_message('debug', 'Attempting to fetch access token with code: ' . substr($code, 0, 20) . '...');
+                
+                $token = $this->google_client->fetchAccessTokenWithAuthCode($code);
+                
+                log_message('debug', 'Access token fetched successfully');
+
+            } catch (\Exception $e) {
+                // Handle any exception from token fetch
+                log_message('error', 'Exception fetching token: ' . $e->getMessage());
+                log_message('error', 'Exception class: ' . get_class($e));
+                
+                // Check if error is in response
+                $prev = $e->getPrevious();
+                if ($prev) {
+                    log_message('error', 'Previous exception: ' . $prev->getMessage());
+                }
+                
+                $this->session->set_flashdata('error', 'Failed to get authorization token from Google. Please try again.');
+                redirect('auth/login');
+                return;
+            }
 
             if (isset($token['error'])) {
-                log_message('error', 'Google OAuth Error: ' . print_r($token, true));
-                $this->session->set_flashdata('error', 'Failed to authenticate with Google.');
+                log_message('error', 'Google OAuth Token Error: ' . json_encode($token));
+                $error_desc = $token['error_description'] ?? $token['error'] ?? 'Unknown error';
+                $this->session->set_flashdata('error', 'Failed to authenticate with Google: ' . $error_desc);
+                redirect('auth/login');
+                return;
+            }
+
+            // Validate token
+            if (empty($token)) {
+                log_message('error', 'Empty token response from Google');
+                $this->session->set_flashdata('error', 'Empty token response from Google. Please try again.');
                 redirect('auth/login');
                 return;
             }
@@ -145,8 +212,11 @@ class Googleauth extends CI_Controller
             // Extract user data
             $google_id = $google_account_info->id;
             $email     = $google_account_info->email;
-            $name      = $google_account_info->name;
-            $picture   = $google_account_info->picture;
+            $name      = $google_account_info->name ?? 'Google User';
+            $picture   = $google_account_info->picture ?? null;
+
+            // Log for debugging
+            log_message('info', 'Google OAuth successful for email: ' . $email);
 
             // Check if user exists by google_id
             $user = $this->Auth_model->get_user_by_google_id($google_id);
@@ -157,6 +227,7 @@ class Googleauth extends CI_Controller
                     'avatar_url' => $picture,
                 ];
                 $this->Auth_model->update_user($user->id_user, $update_data);
+                log_message('info', 'Existing Google user logged in: ' . $email);
 
             } else {
                 // Check if email already exists (local account)
@@ -170,7 +241,8 @@ class Googleauth extends CI_Controller
                         'avatar_url'     => $picture,
                     ];
                     $this->Auth_model->update_user($existing_user->id_user, $update_data);
-                    $user = $this->Auth_model->get_user_by_email($email);
+                    $user = $existing_user;
+                    log_message('info', 'Google account linked to existing local account: ' . $email);
 
                 } else {
                     // Create new user
@@ -186,7 +258,16 @@ class Googleauth extends CI_Controller
 
                     $user_id = $this->Auth_model->create_user($user_data);
                     $user    = $this->Auth_model->get_user_by_id($user_id);
+                    log_message('info', 'New Google user created: ' . $email);
                 }
+            }
+
+            // Check if user still doesn't exist
+            if (!$user) {
+                log_message('error', 'Failed to retrieve user after Google OAuth: ' . $email);
+                $this->session->set_flashdata('error', 'Failed to create/retrieve user from database.');
+                redirect('auth/login');
+                return;
             }
 
             // Set session for logged in user
@@ -195,13 +276,10 @@ class Googleauth extends CI_Controller
                 'nama'           => $user->nama,
                 'email'          => $user->email,
                 'role'           => $user->role,
-                'avatar_url'     => $user->avatar_url,
-                'oauth_provider' => $user->oauth_provider,
+                'avatar_url'     => $user->avatar_url ?? null,
+                'oauth_provider' => 'google',
                 'logged_in'      => true,
             ]);
-
-            // Log successful login
-            log_message('info', 'User logged in via Google OAuth: ' . $email);
 
             // Check if there's a redirect URL stored in session
             $redirect_url = $this->session->userdata('oauth_redirect');
@@ -219,8 +297,8 @@ class Googleauth extends CI_Controller
             }
 
         } catch (Exception $e) {
-            log_message('error', 'Google OAuth Exception: ' . $e->getMessage());
-            $this->session->set_flashdata('error', 'An error occurred during Google authentication.');
+            log_message('error', 'Google OAuth Exception: ' . $e->getMessage() . '\nStack: ' . $e->getTraceAsString());
+            $this->session->set_flashdata('error', 'An error occurred during Google authentication: ' . $e->getMessage());
             redirect('auth/login');
         }
     }
@@ -233,7 +311,9 @@ class Googleauth extends CI_Controller
         // Optional: Revoke access token
         if ($this->session->userdata('oauth_provider') === 'google') {
             try {
-                $this->google_client->revokeToken();
+                if ($this->google_client) {
+                    $this->google_client->revokeToken();
+                }
             } catch (Exception $e) {
                 log_message('warning', 'Failed to revoke Google token: ' . $e->getMessage());
             }

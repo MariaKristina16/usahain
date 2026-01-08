@@ -21,7 +21,6 @@
       font-family: 'Inter', sans-serif; 
       background:var(--muted-bg);
       overflow-x:hidden;
-      scroll-behavior: smooth;
     }
 
     .container{
@@ -30,11 +29,11 @@
 
     /* NAVBAR UPDATED */
     .navbar {
-      background: rgba(255, 255, 255, 0) !important;
-      backdrop-filter: none;
-      box-shadow: none;
+      background: rgba(255, 255, 255, 0.95) !important;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
       padding: 14px 0;
-      border-radius: 0;
+      border-radius: 0 0 24px 24px;
       position: sticky;
       top: 0;
       z-index: 1000;
@@ -684,146 +683,36 @@
 <nav class="navbar navbar-expand-lg">
   <div class="container">
     
-    <!-- NAVBAR INNER WRAPPER - CAPSULE DESIGN -->
-    <div style="
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-      background: #FFFFFF;
-      border-radius: 9999px;
-      padding: 14px 28px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-      gap: 20px;
-    ">
+    <!-- Logo -->
+    <a class="navbar-brand" href="<?= site_url(); ?>">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="">
+        <circle cx="16" cy="16" r="16" fill="#1C6494"/>
+        <path d="M12 10h8a2 2 0 012 2v8a2 2 0 01-2 2h-8a2 2 0 01-2-2v-8a2 2 0 012-2z" fill="white"/>
+        <circle cx="16" cy="16" r="3" fill="#1C6494"/>
+      </svg>
+      Usahain
+    </a>
+
+    <!-- Mobile Toggle -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Menu Content -->
+    <div class="collapse navbar-collapse" id="navbarContent">
       
-      <!-- LEFT SECTION: Logo & Brand -->
-      <div style="
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        flex-shrink: 0;
-        min-width: auto;
-      ">
-        <img src="<?= base_url('assets/logo.png'); ?>" alt="Usahain Logo" style="
-          width: 40px;
-          height: 40px;
-          border-radius: 8px;
-          object-fit: contain;
-        ">
-        <span style="
-          font-weight: 700;
-          font-size: 1.3rem;
-          color: #1C6494;
-          white-space: nowrap;
-          display: none;
-        " class="d-none d-sm-inline">Usahain</span>
-      </div>
-
-      <!-- MOBILE TOGGLE (HIDDEN BY DEFAULT) -->
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" style="
-        display: none;
-        border: none;
-        padding: 8px 12px;
-      ">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <!-- CENTER SECTION: Menu Links (Hidden on Mobile) -->
-      <ul class="navbar-nav mx-auto" style="
-        display: flex;
-        gap: 8px;
-        margin: 0;
-        list-style: none;
-        flex-grow: 1;
-        justify-content: center;
-      " id="navbarContent">
-        <li class="nav-item" style="margin: 0;"><a class="nav-link" href="#features" style="
-          color: #64748B;
-          font-weight: 500;
-          font-size: 0.95rem;
-          padding: 10px 16px;
-          border-radius: 8px;
-          transition: all 0.3s ease;
-          margin: 0;
-        " onmouseover="this.style.color='#1C6494'; this.style.backgroundColor='rgba(28, 100, 148, 0.08)';" onmouseout="this.style.color='#64748B'; this.style.backgroundColor='transparent';">Fitur</a></li>
-        <li class="nav-item" style="margin: 0;"><a class="nav-link" href="#penawaran" style="
-          color: #64748B;
-          font-weight: 500;
-          font-size: 0.95rem;
-          padding: 10px 16px;
-          border-radius: 8px;
-          transition: all 0.3s ease;
-          margin: 0;
-        " onmouseover="this.style.color='#1C6494'; this.style.backgroundColor='rgba(28, 100, 148, 0.08)';" onmouseout="this.style.color='#64748B'; this.style.backgroundColor='transparent';">Paket</a></li>
-        <li class="nav-item" style="margin: 0;"><a class="nav-link" href="#why" style="
-          color: #64748B;
-          font-weight: 500;
-          font-size: 0.95rem;
-          padding: 10px 16px;
-          border-radius: 8px;
-          transition: all 0.3s ease;
-          margin: 0;
-        " onmouseover="this.style.color='#1C6494'; this.style.backgroundColor='rgba(28, 100, 148, 0.08)';" onmouseout="this.style.color='#64748B'; this.style.backgroundColor='transparent';">Tentang</a></li>
-        <li class="nav-item" style="margin: 0;"><a class="nav-link" href="#footer" style="
-          color: #64748B;
-          font-weight: 500;
-          font-size: 0.95rem;
-          padding: 10px 16px;
-          border-radius: 8px;
-          transition: all 0.3s ease;
-          margin: 0;
-        " onmouseover="this.style.color='#1C6494'; this.style.backgroundColor='rgba(28, 100, 148, 0.08)';" onmouseout="this.style.color='#64748B'; this.style.backgroundColor='transparent';">Kontak</a></li>
+      <!-- Center Menu -->
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item"><a class="nav-link" href="#features">Fitur</a></li>
+        <li class="nav-item"><a class="nav-link" href="#how-it-works">Cara Kerja</a></li>
+        <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
+        <li class="nav-item"><a class="nav-link" href="#contact">Kontak</a></li>
       </ul>
 
-      <!-- RIGHT SECTION: Action Buttons -->
-      <div style="
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        flex-shrink: 0;
-        min-width: auto;
-      ">
-        <!-- LOGIN BUTTON: Outline Style -->
-        <a href="<?= site_url('auth/login'); ?>" style="
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          padding: 10px 24px;
-          border: 2px solid #1C6494;
-          background: white;
-          color: #1C6494;
-          border-radius: 8px;
-          font-weight: 600;
-          font-size: 0.95rem;
-          text-decoration: none;
-          transition: all 0.3s ease;
-          cursor: pointer;
-          white-space: nowrap;
-        " onmouseover="this.style.backgroundColor='rgba(28, 100, 148, 0.05)'; this.style.boxShadow='0 4px 12px rgba(28, 100, 148, 0.15)';" onmouseout="this.style.backgroundColor='white'; this.style.boxShadow='none';">
-          Login
-        </a>
-
-        <!-- SIGN UP BUTTON: Solid Style -->
-        <a href="<?= site_url('auth/register'); ?>" style="
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          padding: 10px 28px;
-          background: linear-gradient(135deg, #1C6494, #2563eb);
-          color: white;
-          border: none;
-          border-radius: 8px;
-          font-weight: 600;
-          font-size: 0.95rem;
-          text-decoration: none;
-          transition: all 0.3s ease;
-          cursor: pointer;
-          box-shadow: 0 4px 12px rgba(28, 100, 148, 0.25);
-          white-space: nowrap;
-        " onmouseover="this.style.boxShadow='0 6px 20px rgba(28, 100, 148, 0.35)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow='0 4px 12px rgba(28, 100, 148, 0.25)'; this.style.transform='translateY(0)';">
-          Sign Up
-        </a>
+      <!-- Right Buttons -->
+      <div class="d-flex align-items-center gap-2">
+        <a class="btn btn-login" href="<?= site_url('auth/login'); ?>">Login</a>
+        <a class="btn btn-signup" href="<?= site_url('auth/register'); ?>">Sign Up</a>
       </div>
 
     </div>
@@ -851,7 +740,7 @@
               Mulai Sekarang
             </a>
             <a href="#features" class="btn" style="background: transparent; border: 2px solid #1C6494; color: #1C6494; padding: 10px 26px; border-radius: 10px; font-weight: 600; transition: all 0.3s;">
-              Yuk, Kenali Lebih lanjut!
+              Pelajari Lebih Lanjut
             </a>
           </div>
         </div>
@@ -1030,7 +919,7 @@
 </section>
 
 <!-- PENAWARAN SPESIAL -->
-<section id="penawaran" class="py-5" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); position: relative; overflow: hidden;">
+<section class="py-5" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); position: relative; overflow: hidden;">
   
   <!-- Decorative Elements -->
   <div style="position: absolute; top: -50px; left: -50px; width: 200px; height: 200px; background: linear-gradient(135deg, rgba(28, 100, 148, 0.08), rgba(37, 99, 235, 0.08)); border-radius: 50%; filter: blur(40px);"></div>
@@ -1227,7 +1116,7 @@
           <p>Platform yang dirancang khusus untuk membantu pelaku UMKM dalam mengelola dan mengembangkan bisnis mereka dengan lebih efisien dan terstruktur.</p>
           <p>Dengan fitur-fitur yang mudah digunakan dan dukungan penuh dari tim kami, kesuksesan bisnis Anda adalah prioritas kami.</p>
           
-          <a href="<?= site_url('about'); ?>" class="why-btn">Yuk, Kenali Lebih lanjut!</a>
+          <a href="#features" class="why-btn">PELAJARI LEBIH LANJUT</a>
         </div>
       </div>
 
@@ -1289,7 +1178,7 @@
 </section>
 
 <!-- FOOTER -->
-<footer id="footer" style="background: #1e293b; color: white; padding: 60px 0 0;">
+<footer style="background: #1e293b; color: white; padding: 60px 0 0;">
   <div class="container">
     <div class="row">
       
@@ -1297,7 +1186,11 @@
       <div class="col-lg-4 col-md-6 mb-4">
         <div style="margin-bottom: 24px;">
           <h3 style="font-size: 1.8rem; font-weight: 800; color: white; display: flex; align-items: center; gap: 10px;">
-            <img src="<?= base_url('assets/logo.png'); ?>" alt="Usahain Logo" style="width: 36px; height: 36px; border-radius: 8px; object-fit: contain;">
+            <svg width="36" height="36" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="16" cy="16" r="16" fill="#65C1DF"/>
+              <path d="M12 10h8a2 2 0 012 2v8a2 2 0 01-2 2h-8a2 2 0 01-2-2v-8a2 2 0 012-2z" fill="white"/>
+              <circle cx="16" cy="16" r="3" fill="#1C6494"/>
+            </svg>
             Usahain
           </h3>
         </div>
@@ -1395,66 +1288,5 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-<script>
-  // Active Nav Link Detection
-  document.addEventListener('DOMContentLoaded', function() {
-    const navLinks = document.querySelectorAll('#navbarContent .nav-link');
-    
-    function updateActiveLink() {
-      let currentSection = '';
-      const sections = ['features', 'penawaran', 'why', 'footer'];
-      
-      for (const section of sections) {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          if (rect.top <= 200) {
-            currentSection = section;
-          }
-        }
-      }
-      
-      navLinks.forEach(link => {
-        const href = link.getAttribute('href');
-        const sectionId = href.replace('#', '');
-        
-        if (sectionId === currentSection) {
-          // Active state
-          link.style.color = '#1C6494';
-          link.style.backgroundColor = 'rgba(28, 100, 148, 0.1)';
-          link.style.fontWeight = '600';
-        } else {
-          // Inactive state
-          link.style.color = '#64748B';
-          link.style.backgroundColor = 'transparent';
-          link.style.fontWeight = '500';
-        }
-      });
-    }
-    
-    // Update on scroll
-    window.addEventListener('scroll', updateActiveLink);
-    
-    // Initial check
-    updateActiveLink();
-    
-    // Update on click and smooth scroll
-    navLinks.forEach(link => {
-      link.addEventListener('click', function(e) {
-        e.preventDefault();
-        const href = this.getAttribute('href');
-        const targetId = href.replace('#', '');
-        const targetElement = document.getElementById(targetId);
-        
-        if (targetElement) {
-          targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          setTimeout(updateActiveLink, 500);
-        }
-      });
-    });
-  });
-</script>
-
 </body>
 </html>

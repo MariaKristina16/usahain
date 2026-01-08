@@ -232,4 +232,43 @@ class Auth extends CI_Controller
         }
         $this->load->view('auth/bisnis_info');
     }
+
+    /**
+     * Halaman rekomendasi informasi bisnis
+     */
+    public function info_bisnis()
+    {
+        if (! $this->session->userdata('id_user')) {
+            redirect('auth/login');
+        }
+        $data['user'] = $this->session->userdata();
+        $this->load->view('auth/info_bisnis', $data);
+    }
+
+    /**
+     * Dashboard Planning (untuk calon pemilik UMKM)
+     */
+    public function dashboard_planning()
+    {
+        if (! $this->session->userdata('id_user')) {
+            redirect('auth/login');
+        }
+
+        $data['user'] = $this->session->userdata();
+        $this->load->view('auth/dashboard_planning', $data);
+    }
+
+    /**
+     * Dashboard Operasional
+     */
+    public function dashboard_operasional()
+    {
+        if (! $this->session->userdata('id_user')) {
+            redirect('auth/login');
+        }
+
+        $data['user'] = $this->session->userdata();
+        $this->load->view('auth/dashboard_operasional', $data);
+    }
+
 }

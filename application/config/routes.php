@@ -54,7 +54,7 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 // User routes (friendly URLs)
-$route['dashboard'] = 'user/dashboard';  // User dashboard dengan modal penjualan
+// Removed: $route['dashboard'] = 'user/dashboard'; - now redirects to auth/dashboard
 $route['risiko/dashboard'] = 'risiko/dashboard';  // Dashboard Manajemen Risiko
 $route['info'] = 'info';  // Rekomendasi Informasi Bisnis
 $route['users'] = 'user/index';
@@ -73,3 +73,27 @@ $route['user/delete/(:num)'] = 'user/delete/$1';
 $route['auth/login'] = 'auth/login';
 $route['auth/register'] = 'auth/register';
 $route['auth/dashboard'] = 'auth/dashboard';
+$route['auth/dashboard_selection'] = 'auth/dashboard_selection';
+$route['auth/bisnis_info'] = 'auth/bisnis_info';
+$route['auth/info_bisnis'] = 'auth/info_bisnis';
+$route['auth/change_dashboard'] = 'auth/change_dashboard';
+$route['auth/set_dashboard_type/(:any)'] = 'auth/set_dashboard_type/$1';
+
+// Dashboard friendly URLs
+$route['dashboard'] = 'auth/dashboard';
+$route['dashboard/planning'] = 'auth/set_dashboard_type/planning';
+$route['dashboard/operasional'] = 'auth/set_dashboard_type/operasional';
+
+// Tools friendly URLs
+$route['advisor'] = 'advisor/index';
+$route['hpp'] = 'hpp/index';
+$route['keuangan'] = 'keuangan/index';
+$route['risiko'] = 'risiko/index';
+$route['analisis'] = 'analisis/index';
+
+// Google OAuth routes (pastikan bisa diakses)
+$route['googleauth/login'] = 'googleauth/login';
+$route['googleauth/callback'] = 'googleauth/callback';
+
+// Static pages
+$route['about'] = 'landing/about';

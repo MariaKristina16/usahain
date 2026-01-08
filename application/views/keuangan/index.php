@@ -8,34 +8,40 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #4A90E2;
-            --success: #27ae60;
-            --danger: #e74c3c;
-            --bg: #F5F8FA;
+            --primary: #1F6B99;
+            --primary-dark: #154A6F;
+            --primary-light: #E8F4FB;
+            --secondary: #7EC8E3;
+            --success: #10B981;
+            --danger: #EF4444;
+            --text: #1E293B;
+            --text-secondary: #64748B;
+            --bg: #F8FAFC;
             --card: #FFFFFF;
-            --muted: #7f8c8d;
-            --shadow: 0 4px 16px rgba(74,144,226,0.08);
+            --border: #E2E8F0;
+            --shadow: 0 4px 12px rgba(31,107,153,0.1);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', Arial, sans-serif; background: var(--bg); color: #2D3748; }
+        body { font-family: 'Inter', Arial, sans-serif; background: var(--bg); color: var(--text); }
         .container { max-width: 900px; margin: 32px auto; padding: 0 18px; }
-        .card { background: var(--card); border-radius: 16px; box-shadow: var(--shadow); padding: 32px 28px; margin-bottom: 32px; }
-        h2 { color: var(--primary); font-size: 1.4rem; font-weight: 700; margin-bottom: 18px; }
+        .card { background: var(--card); border-radius: 12px; box-shadow: var(--shadow); padding: 32px 28px; margin-bottom: 32px; }
+        h2 { color: var(--primary-dark); font-size: 1.4rem; font-weight: 700; margin-bottom: 18px; }
         .summary-row { display: flex; gap: 18px; margin-bottom: 18px; }
-        .summary-card { background: #eaf2ff; border-radius: 12px; padding: 18px 24px; flex: 1; text-align: center; box-shadow: 0 2px 8px rgba(74,144,226,0.08); }
-        .summary-card .label { color: var(--muted); font-size: 1rem; margin-bottom: 4px; }
-        .summary-card .value { font-size: 1.3rem; font-weight: 700; color: var(--primary); }
+        .summary-card { background: var(--primary-light); border-radius: 12px; padding: 18px 24px; flex: 1; text-align: center; box-shadow: 0 2px 8px rgba(31,107,153,0.08); border-left: 4px solid var(--primary); }
+        .summary-card .label { color: var(--text-secondary); font-size: 1rem; margin-bottom: 4px; }
+        .summary-card .value { font-size: 1.3rem; font-weight: 700; color: var(--primary-dark); }
         .form-row { display: flex; gap: 12px; margin-bottom: 18px; }
-        .form-row input, .form-row select { flex: 1; padding: 12px 16px; border-radius: 8px; border: 1.5px solid #e2e8f0; font-size: 1rem; background: #f7fafc; }
-        .btn { padding: 12px 24px; border-radius: 8px; font-weight: 700; font-size: 1rem; border: none; cursor: pointer; background: var(--primary); color: #fff; transition: background 0.2s; }
-        .btn:hover { opacity: 0.92; }
+        .form-row input, .form-row select { flex: 1; padding: 12px 16px; border-radius: 8px; border: 1.5px solid var(--border); font-size: 1rem; background: #fff; color: var(--text); }
+        .form-row input:focus, .form-row select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(31,107,153,0.1); }
+        .btn { padding: 12px 24px; border-radius: 8px; font-weight: 600; font-size: 1rem; border: none; cursor: pointer; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: #fff; transition: all 0.3s; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(31,107,153,0.2); }
         table { width: 100%; border-collapse: collapse; margin-top: 18px; font-size: 1rem; }
-        th, td { padding: 14px 10px; border-bottom: 1px solid #e2e8f0; text-align: left; }
-        th { background: #f7fafc; color: var(--primary); font-weight: 700; }
+        th, td { padding: 14px 10px; border-bottom: 1px solid var(--border); text-align: left; }
+        th { background: var(--primary-light); color: var(--primary-dark); font-weight: 700; }
         .currency { text-align: right; font-weight: 600; }
-        .badge { display: inline-block; padding: 4px 12px; border-radius: 8px; font-size: 0.98em; font-weight: 600; }
-        .badge.success { background: #e6f9ed; color: var(--success); }
-        .badge.danger { background: #ffecec; color: var(--danger); }
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 6px; font-size: 0.85em; font-weight: 600; }
+        .badge.success { background: #D1FAE5; color: #065F46; }
+        .badge.danger { background: #FEE2E2; color: #991B1B; }
         @media (max-width: 900px) { .summary-row, .form-row { flex-direction: column; gap: 10px; } }
     </style>
 </head>

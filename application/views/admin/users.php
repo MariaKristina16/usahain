@@ -369,7 +369,7 @@
         <div class="navbar-container">
             <div class="navbar-left">
                 <a href="<?= site_url('admin/dashboard'); ?>" class="navbar-brand">
-                    <span class="navbar-logo"><img src="<?= base_url('assets/logo_usahain.png'); ?>" alt="Usahain"></span>
+                    <span class="navbar-logo"><img src="<?= base_url('assets/logo.png'); ?>" alt="Usahain"></span>
                     <span class="navbar-title">Usahain Admin</span>
                 </a>
             </div>
@@ -385,12 +385,6 @@
             </div>
         </div>
     </nav>
-    <div class="admin-tabs">
-        <button class="admin-tab active"><span>📊</span> Overview</button>
-        <button class="admin-tab active"><span>👥</span> Pengguna</button>
-        <button class="admin-tab active"><span>🧩</span> Fitur</button>
-        <button class="admin-tab active"><span>⚙️</span> Pengaturan</button>
-    </div>
     <div class="container">
         <div class="section-title">Manajemen Pengguna</div>
         <div style="color:var(--text-secondary);margin-bottom:18px;">Kelola semua pengguna platform Usahain</div>

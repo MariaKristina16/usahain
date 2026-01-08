@@ -8,4 +8,9 @@ class Landing extends CI_Controller {
         $this->load->view('landing');
     }
 
+    public function about()
+    {
+        $this->load->view('about');
+    }
+
 }

@@ -160,6 +160,8 @@ CREATE TABLE `user` (
   `email` varchar(250) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   `nama_usaha` varchar(255) DEFAULT NULL,
+  `jenis_usaha` varchar(100) DEFAULT NULL,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `created_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

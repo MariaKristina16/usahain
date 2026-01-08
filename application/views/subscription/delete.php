@@ -5,15 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Konfirmasi Hapus Subscription</title>
     <style>
+        :root {
+            --primary: #1F6B99;
+            --danger: #C62828;
+            --text-dark: #1E293B;
+            --warning: #F57C00;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 20px; }
-        .navbar { background: #333; color: #fff; padding: 15px 20px; display: flex; justify-content: space-between; margin-bottom: 20px; }
+        .navbar { background: var(--text-dark); color: #fff; padding: 15px 20px; display: flex; justify-content: space-between; margin-bottom: 20px; }
         .navbar a { color: #fff; text-decoration: none; margin-left: 15px; }
         .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        h1 { color: #333; margin-bottom: 20px; }
+        h1 { color: var(--text-dark); margin-bottom: 20px; }
         .warning { background: #fff3cd; border: 1px solid #ffc107; color: #856404; padding: 15px; border-radius: 4px; margin-bottom: 20px; }
         .btn { display: inline-block; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; margin-right: 10px; margin-top: 20px; }
-        .btn-danger { background: #dc3545; color: #fff; }
+        .btn-danger { background: var(--danger); color: #fff; }
         .btn-danger:hover { background: #c82333; }
         .btn-secondary { background: #6c757d; color: #fff; }
         .btn-secondary:hover { background: #5a6268; }

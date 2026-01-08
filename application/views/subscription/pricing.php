@@ -26,7 +26,7 @@
                 icon: 'info',
                 title: 'Login Diperlukan',
                 text: 'Silakan login terlebih dahulu untuk memilih paket langganan.',
-                confirmButtonColor: '#1C6494',
+                confirmButtonColor: '#1F6B99',
                 confirmButtonText: 'Login'
             }).then(() => {
                 window.location.href = '<?php echo site_url('auth/login'); ?>';
@@ -38,7 +38,7 @@
                 icon: 'info',
                 title: 'Paket Gratis',
                 text: 'Paket Starter gratis! Anda dapat langsung menggunakannya.',
-                confirmButtonColor: '#1C6494',
+                confirmButtonColor: '#1F6B99',
                 confirmButtonText: 'OK'
             }).then(() => {
                 window.location.href = '<?php echo site_url('user'); ?>';
@@ -108,7 +108,7 @@
                                 icon: 'success',
                                 title: 'Pembayaran Berhasil!',
                                 text: 'Langganan Anda telah diaktifkan.',
-                                confirmButtonColor: '#1C6494',
+                                confirmButtonColor: '#1F6B99',
                                 confirmButtonText: 'Pilih Dashboard'
                             }).then(() => {
                                 window.location.href = '<?php echo site_url('dashboard_selection'); ?>';
@@ -120,7 +120,7 @@
                                 icon: 'warning',
                                 title: 'Pembayaran Berhasil',
                                 text: 'Pembayaran berhasil, tetapi terjadi kesalahan saat mengaktifkan langganan. Silakan hubungi admin.',
-                                confirmButtonColor: '#1C6494'
+                                confirmButtonColor: '#1F6B99'
                             }).then(() => {
                                 window.location.href = '<?php echo site_url('subscription'); ?>';
                             });
@@ -131,7 +131,7 @@
                             icon: 'info',
                             title: 'Transaksi Tertunda',
                             text: 'Silakan selesaikan pembayaran Anda.',
-                            confirmButtonColor: '#1C6494'
+                            confirmButtonColor: '#1F6B99'
                         });
                         console.log(result);
                     },
@@ -140,7 +140,7 @@
                             icon: 'error',
                             title: 'Pembayaran Gagal',
                             text: 'Silakan coba lagi.',
-                            confirmButtonColor: '#1C6494'
+                            confirmButtonColor: '#1F6B99'
                         });
                         console.log(result);
                     },
@@ -153,14 +153,14 @@
                     icon: 'error',
                     title: 'Error',
                     text: data.error,
-                    confirmButtonColor: '#1C6494'
+                    confirmButtonColor: '#1F6B99'
                 });
             } else {
                 Swal.fire({
                     icon: 'error',
                     title: 'Gagal',
                     text: 'Gagal mendapatkan token pembayaran.',
-                    confirmButtonColor: '#1C6494'
+                    confirmButtonColor: '#1F6B99'
                 });
             }
         })
@@ -171,53 +171,74 @@
                 icon: 'error',
                 title: 'Kesalahan Koneksi',
                 text: 'Gagal menghubungi server pembayaran.',
-                confirmButtonColor: '#1C6494'
+                confirmButtonColor: '#1F6B99'
             });
         });
     }
     </script>
     <style>
+        :root {
+            /* Color System - Usahain Brand */
+            --primary: #1F6B99;           /* Main brand blue */
+            --primary-dark: #154A6F;      /* Dark blue */
+            --primary-light: #2E7DB9;     /* Light blue */
+            --accent: #7EC8E3;            /* Light cyan accent */
+            --accent-dark: #5BA3BF;       /* Medium cyan */
+            --success: #2E7D32;           /* Green */
+            --warning: #F57C00;           /* Orange */
+            --danger: #C62828;            /* Red */
+            --info: #1976D2;              /* Info blue */
+            --text-dark: #1E293B;         /* Dark text */
+            --text-muted: #64748B;        /* Muted text */
+            --border-color: #E2E8F0;      /* Light border */
+            --bg-light: #F8FAFC;          /* Light background */
+            --bg-muted: #f0f4f8;          /* Muted background */
+            --gradient-primary: linear-gradient(135deg, #1F6B99 0%, #2E7DB9 100%);
+            --gradient-accent: linear-gradient(135deg, #7EC8E3 0%, #5BA3BF 100%);
+            --gradient-dark: linear-gradient(135deg, #154A6F 0%, #0F2E47 100%);
+        }
+
         .pricing-header h1 {
             font-size: 2.5rem;
             font-weight: 700;
-            color: #1C6494;
+            color: var(--primary);
             margin-bottom: 12px;
         }
-        .pricing-header p { font-size: 1.1rem; color: #6b7280; }
+        .pricing-header p { font-size: 1.1rem; color: var(--text-muted); }
         .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 40px; }
-        .pricing-card { background: white; border-radius: 24px; padding: 36px 28px; box-shadow: 0 4px 20px rgba(28, 100, 148, 0.08); transition: all 0.3s ease; position: relative; border: 3px solid transparent; }
-        .pricing-card:hover { transform: translateY(-8px); box-shadow: 0 12px 40px rgba(28, 100, 148, 0.15); }
+        .pricing-card { background: white; border-radius: 24px; padding: 36px 28px; box-shadow: 0 4px 20px rgba(31, 107, 153, 0.08); transition: all 0.3s ease; position: relative; border: 3px solid transparent; }
+        .pricing-card:hover { transform: translateY(-8px); box-shadow: 0 12px 40px rgba(31, 107, 153, 0.15); }
         .pricing-card.starter { background: linear-gradient(135deg, #ffe4e8 0%, #ffd4db 100%); }
-        .pricing-card.essential { background: linear-gradient(135deg, #cfe5f2 0%, #b8d9ed 100%); border-color: #1C6494; }
+        .pricing-card.essential { background: linear-gradient(135deg, #cfe5f2 0%, #b8d9ed 100%); border-color: var(--primary); }
         .pricing-card.growth { background: linear-gradient(135deg, #e4d9f5 0%, #d4c5ed 100%); }
         .pricing-card.elite { background: linear-gradient(135deg, #fff4d9 0%, #ffe8b8 100%); }
-        .badge-top { position: absolute; top: -12px; right: 20px; background: #FFD700; color: #1C6494; padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4); }
+        .badge-top { position: absolute; top: -12px; right: 20px; background: #FFD700; color: var(--primary); padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4); }
         .badge-top.promo { background: #FFD700; }
         .badge-top.populer { background: #ff9800; color: white; }
-        .badge-top.terbaik { background: #4CAF50; color: white; }
+        .badge-top.terbaik { background: var(--success); color: white; }
         .plan-name { font-size: 1.8rem; font-weight: 700; margin-bottom: 8px; }
         .starter .plan-name { color: #e74c3c; }
-        .essential .plan-name { color: #1C6494; }
+        .essential .plan-name { color: var(--primary); }
         .growth .plan-name { color: #9b59ff; }
         .elite .plan-name { color: #ff9800; }
-        .plan-subtitle { font-size: 0.95rem; color: #6b7280; margin-bottom: 24px; font-style: italic; }
+        .plan-subtitle { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 24px; font-style: italic; }
         .price-tag { font-size: 3rem; font-weight: 700; margin-bottom: 8px; line-height: 1; }
         .starter .price-tag { color: #e74c3c; }
-        .essential .price-tag { color: #1C6494; }
+        .essential .price-tag { color: var(--primary); }
         .growth .price-tag { color: #9b59ff; }
         .elite .price-tag { color: #ff9800; }
-        .price-period { font-size: 0.95rem; color: #6b7280; margin-bottom: 24px; }
+        .price-period { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 24px; }
         .features-list { list-style: none; padding: 0; margin: 24px 0; }
-        .features-list li { padding: 10px 0; color: #374151; display: flex; align-items: flex-start; gap: 8px; }
-        .features-list li:before { content: "✓"; color: #27ae60; font-weight: bold; font-size: 1.2rem; }
+        .features-list li { padding: 10px 0; color: var(--text-dark); display: flex; align-items: flex-start; gap: 8px; }
+        .features-list li:before { content: "✓"; color: var(--success); font-weight: bold; font-size: 1.2rem; }
         .btn-choose { width: 100%; padding: 14px; border: none; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
         .starter .btn-choose { background: #e74c3c; color: white; }
-        .essential .btn-choose { background: #1C6494; color: white; }
+        .essential .btn-choose { background: var(--primary); color: white; }
         .growth .btn-choose { background: #9b59ff; color: white; }
         .elite .btn-choose { background: #ff9800; color: white; }
         .btn-choose:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); }
-        .footer-note { text-align: center; margin-top: 40px; color: #6b7280; }
-        .footer-note a { color: #1C6494; text-decoration: none; font-weight: 600; }
+        .footer-note { text-align: center; margin-top: 40px; color: var(--text-muted); }
+        .footer-note a { color: var(--primary); text-decoration: none; font-weight: 600; }
         @media (max-width: 768px) { .pricing-grid { grid-template-columns: 1fr; } }
     </style>
 </head>

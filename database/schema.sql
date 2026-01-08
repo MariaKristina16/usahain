@@ -19,8 +19,10 @@ CREATE TABLE IF NOT EXISTS `user` (
   `role` ENUM('user','admin') NOT NULL DEFAULT 'user',
   `email` VARCHAR(250) UNIQUE,
   `password` VARCHAR(255),
-  `nama_usaha` VARCHAR(255),
+  `nama_usaha` VARCHAR(100),
+  `jenis_usaha` VARCHAR(100),
   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX `idx_google_id` (`google_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
