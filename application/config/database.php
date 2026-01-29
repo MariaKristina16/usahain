@@ -76,11 +76,11 @@ $query_builder = TRUE;
 
 $db['default'] = array(
     'dsn'   => '',
-    'hostname' => 'localhost',
-    'username' => 'root',        // ganti 'usahain' jika Anda membuat user baru
-    'password' => '',            // isi password jika ada
-    'database' => 'usahain_db',  // nama database dari database/schema.sql
-    'dbdriver' => 'mysqli',
+    'hostname' => getenv('DB_HOSTNAME') ?: 'localhost',
+    'username' => getenv('DB_USERNAME') ?: 'root',
+    'password' => getenv('DB_PASSWORD') ?: '',
+    'database' => getenv('DB_DATABASE') ?: 'usahain_db',
+    'dbdriver' => getenv('DB_DRIVER') ?: 'mysqli',
     'dbprefix' => '',
     'pconnect' => FALSE,
     'db_debug' => (ENVIRONMENT !== 'production'),
