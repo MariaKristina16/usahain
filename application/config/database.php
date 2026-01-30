@@ -76,10 +76,11 @@ $query_builder = TRUE;
 
 $db['default'] = array(
     'dsn'   => '',
-    'hostname' => getenv('DB_HOSTNAME') ?: 'localhost',
-    'username' => getenv('DB_USERNAME') ?: 'root',
-    'password' => getenv('DB_PASSWORD') ?: '',
-    'database' => getenv('DB_DATABASE') ?: 'usahain_db',
+    'hostname' => getenv('DB_HOSTNAME') ?: (getenv('MYSQLHOST') ?: 'localhost'),
+    'port' => getenv('DB_PORT') ?: (getenv('MYSQLPORT') ?: 3306),
+    'username' => getenv('DB_USERNAME') ?: (getenv('MYSQLUSER') ?: 'root'),
+    'password' => getenv('DB_PASSWORD') ?: (getenv('MYSQLPASSWORD') ?: ''),
+    'database' => getenv('DB_DATABASE') ?: (getenv('MYSQL_DATABASE') ?: 'usahain_db'),
     'dbdriver' => getenv('DB_DRIVER') ?: 'mysqli',
     'dbprefix' => '',
     'pconnect' => FALSE,
