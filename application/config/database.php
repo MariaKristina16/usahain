@@ -75,13 +75,13 @@ $active_group = 'default';
 $query_builder = TRUE;
 
 $db['default'] = array(
-    'dsn'   => '',
-    'hostname' => getenv('DB_HOSTNAME') ?: (getenv('MYSQLHOST') ?: 'localhost'),
-    'port' => getenv('DB_PORT') ?: (getenv('MYSQLPORT') ?: 3306),
-    'username' => getenv('DB_USERNAME') ?: (getenv('MYSQLUSER') ?: 'root'),
-    'password' => getenv('DB_PASSWORD') ?: (getenv('MYSQLPASSWORD') ?: ''),
-    'database' => getenv('DB_DATABASE') ?: (getenv('MYSQL_DATABASE') ?: 'usahain_db'),
-    'dbdriver' => getenv('DB_DRIVER') ?: 'mysqli',
+    'dsn'   => 'mysqli://' . (getenv('DB_USERNAME') ?: 'root') . ':' . (getenv('DB_PASSWORD') ?: '') . '@' . (getenv('DB_HOSTNAME') ?: 'localhost') . ':' . (getenv('DB_PORT') ?: '3306') . '/' . (getenv('DB_DATABASE') ?: 'usahain_db'),
+    'hostname' => getenv('DB_HOSTNAME') ?: 'localhost',
+    'port' => (int)(getenv('DB_PORT') ?: 3306),
+    'username' => getenv('DB_USERNAME') ?: 'root',
+    'password' => getenv('DB_PASSWORD') ?: '',
+    'database' => getenv('DB_DATABASE') ?: 'usahain_db',
+    'dbdriver' => 'mysqli',
     'dbprefix' => '',
     'pconnect' => FALSE,
     'db_debug' => (ENVIRONMENT !== 'production'),
